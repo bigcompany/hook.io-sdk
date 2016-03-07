@@ -37,6 +37,8 @@ var targetUrl = argv._[0] || "marak/echo";
 // STDIN / REQUEST OUT stream processing
 process.stdin.setEncoding('utf8');
 
+var streaming = true;
+
 // console.log('opening stream to ', url);
 
 function makeRequest (chunk) {
@@ -47,17 +49,20 @@ function makeRequest (chunk) {
       process.exit(1);
     }
     console.log(res);
-    process.exit(0);
+    if (streaming === false) {
+      process.exit(0);
+    }
   });
 };
 
 if (process.stdin.isTTY) {
+  streaming = false;
   // handle regular command
   makeRequest();
 } else {
   // handle piped content
   process.stdin.on('readable', function() {
-    console.log("READING".red)
+    //console.log("READING".red)
     var chunk = process.stdin.read();
     if (chunk !== null) {
       //console.log(chunk);
