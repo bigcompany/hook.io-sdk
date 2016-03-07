@@ -39,7 +39,7 @@ client.hook.run('marak/echo', { "foo": "bar" }, function (err, res) {
 ```bash
 export HOOK_PRIVATE_KEY='put-your-api-access-key-here'
 export HOOK_HOST='hook.io'
-export HOOK_PORT='80'
+export HOOK_PORT='443'
 export HOOK_PROTOCOL='https'
 ```
 
