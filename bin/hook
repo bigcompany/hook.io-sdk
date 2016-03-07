@@ -1,4 +1,4 @@
-#!/Users/a/.nvm/versions/node/v0.12.7/bin/node
+#!/usr/local/bin/node
 var sdk = require("../");
 var config = require('../config');
 var hook_private_key = "";
