@@ -6,10 +6,12 @@ client.createClient = function createClient (opts) {
 };
 
 var request = require('request');
+var hyper = require('hyperquest');
 var thenify = require('thenify');
 
 var DS = require('./lib/datastore');
 var Hook = require('./lib/hook');
+var Logs = require('./lib/logs');
 
 function Client (opts) {
   var self = this;
@@ -19,6 +21,7 @@ function Client (opts) {
   self.protocol = opts.protocol || "https";
   self.datastore = new DS(self);
   self.hook = new Hook(self);
+  self.logs = new Logs(self);
 
   if (opts.hook_private_key) {
     self.hook_private_key = opts.hook_private_key;
@@ -35,9 +38,10 @@ function Client (opts) {
     }
   }
 
-  extendWithPromiseApi(self);
+  //extendWithPromiseApi(self);
   extendWithPromiseApi(self.datastore);
   extendWithPromiseApi(self.hook);
+  extendWithPromiseApi(self.logs);
   return self;
 };
 
@@ -52,7 +56,11 @@ Client.prototype.request = function (url, opts, cb) {
     opts.json.hook_private_key = self.hook_private_key;
   }
   // console.log('making request', url, opts)
-  request(url, opts, cb);
+  if (opts.stream === true) {
+    return hyper(url);
+  } else {
+    request(url, opts, cb);
+  }
 };
 
 Client.prototype.error = function (err, context, cb) {

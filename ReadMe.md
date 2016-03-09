@@ -21,7 +21,7 @@ npm install -g hook.io-sdk
 
 - [x] Hook ( basic )
 - [x] Datastore
-- [ ] Logs
+- [x] Logs
 - [ ] Events
 - [ ] Domains
 - [ ] Keys
