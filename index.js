@@ -6,6 +6,7 @@ client.createClient = function createClient (opts) {
 };
 
 var request = require('request');
+var thenify = require('thenify');
 
 var DS = require('./lib/datastore');
 var Hook = require('./lib/hook');
@@ -23,6 +24,20 @@ function Client (opts) {
     self.hook_private_key = opts.hook_private_key;
     self.attemptAuth = true;
   }
+
+  // extends all core sdk methods with ES6 Promise API
+  // should be non-instrusive and not affect Callback API...
+  function extendWithPromiseApi (obj) {
+    for (var p in obj) {
+      if (typeof obj[p] === "function") {
+        obj[p] = thenify(obj[p]);
+      }
+    }
+  }
+
+  extendWithPromiseApi(self);
+  extendWithPromiseApi(self.datastore);
+  extendWithPromiseApi(self.hook);
   return self;
 };
 
