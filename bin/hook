@@ -32,6 +32,9 @@ var colors = require('colors');
 var argv = require('minimist')(process.argv.slice(2));
 
 var targetUrl = argv._[0] || "marak/echo";
+// TODO: unhard-code
+var targetContext = "hook";
+var targetAction = argv._[1] || "run";
 //console.log(targetUrl)
 
 // STDIN / REQUEST OUT stream processing
@@ -43,12 +46,15 @@ var streaming = true;
 
 function makeRequest (chunk) {
   //var url = "http://hook.io/" + targetUrl;
-  client.hook.run(targetUrl, { body: chunk }, function(err, res){
+  //targetAction
+  // console.log('making request', targetContext, targetAction, targetUrl, chunk)
+  client[targetContext][targetAction](targetUrl, { body: chunk }, { streaming: streaming, output: process.stdout }, function (err, res) {
     if (err) {
       console.log(err);
       process.exit(1);
     }
-    console.log(res);
+    //console.log(res);
+    //console.log('isStreaming', streaming)
     if (streaming === false) {
       process.exit(0);
     }
@@ -56,7 +62,7 @@ function makeRequest (chunk) {
 };
 
 if (process.stdin.isTTY) {
-  streaming = false;
+  streaming = true;
   // handle regular command
   makeRequest();
 } else {

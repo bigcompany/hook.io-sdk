@@ -10,18 +10,32 @@ var hyper = require('hyperquest');
 var thenify = require('thenify');
 
 var DS = require('./lib/datastore');
+var Domains = require('./lib/domains');
+var Env = require('./lib/env');
+var Events = require('./lib/events');
+var Files = require('./lib/files');
 var Hook = require('./lib/hook');
 var Logs = require('./lib/logs');
+var config = require('./config');
 
 function Client (opts) {
   var self = this;
 
-  self.host = opts.host || "hook.io";
-  self.port = opts.port || 443;
-  self.protocol = opts.protocol || "https";
+  self.host = opts.host || config.host || "hook.io";
+  self.port = opts.port || config.port || 443;
+  self.protocol = opts.protocol || config.protocol || "https";
   self.datastore = new DS(self);
+  self.env = new Env(self);
+  self.events = new Events(self);
+  self.files = new Files(self);
   self.hook = new Hook(self);
   self.logs = new Logs(self);
+  self.domains = new Domains(self);
+
+  if (config.accessKey) {
+    self.hook_private_key = config.accessKey;
+    self.attemptAuth = true;
+  }
 
   if (opts.hook_private_key) {
     self.hook_private_key = opts.hook_private_key;
@@ -40,6 +54,10 @@ function Client (opts) {
 
   //extendWithPromiseApi(self);
   extendWithPromiseApi(self.datastore);
+  extendWithPromiseApi(self.domains);
+  extendWithPromiseApi(self.env);
+  extendWithPromiseApi(self.events);
+  extendWithPromiseApi(self.files);
   extendWithPromiseApi(self.hook);
   extendWithPromiseApi(self.logs);
   return self;
@@ -55,9 +73,8 @@ Client.prototype.request = function (url, opts, cb) {
     }
     opts.json.hook_private_key = self.hook_private_key;
   }
-  // console.log('making request', url, opts)
   if (opts.stream === true) {
-    return hyper(url);
+    return hyper(url + "?streaming=true", { headers: { "hookio-private-key": self.hook_private_key }});
   } else {
     request(url, opts, cb);
   }
