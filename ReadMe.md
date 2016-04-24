@@ -25,7 +25,7 @@ npm install -g hook.io-sdk
 - [ ] Events
 - [ ] Files
 - [ ] Domains
-- [ ] Keys
+- [x] Keys
 - [ ] Env
 - [ ] Hook ( advanced )
 

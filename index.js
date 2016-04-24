@@ -15,6 +15,7 @@ var Env = require('./lib/env');
 var Events = require('./lib/events');
 var Files = require('./lib/files');
 var Hook = require('./lib/hook');
+var Keys = require('./lib/keys');
 var Logs = require('./lib/logs');
 var config = require('./config');
 
@@ -29,6 +30,7 @@ function Client (opts) {
   self.events = new Events(self);
   self.files = new Files(self);
   self.hook = new Hook(self);
+  self.keys = new Keys(self);
   self.logs = new Logs(self);
   self.domains = new Domains(self);
 
@@ -36,7 +38,6 @@ function Client (opts) {
     self.hook_private_key = config.accessKey;
     self.attemptAuth = true;
   }
-
   if (opts.hook_private_key) {
     self.hook_private_key = opts.hook_private_key;
     self.attemptAuth = true;
@@ -59,6 +60,7 @@ function Client (opts) {
   extendWithPromiseApi(self.events);
   extendWithPromiseApi(self.files);
   extendWithPromiseApi(self.hook);
+  extendWithPromiseApi(self.keys);
   extendWithPromiseApi(self.logs);
   return self;
 };
@@ -71,7 +73,7 @@ Client.prototype.request = function (url, opts, cb) {
     if (opts.json === true) {
       opts.json = {};
     }
-    opts.json.hook_private_key = self.hook_private_key;
+    opts.json.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
   }
   if (opts.stream === true) {
     return hyper(url + "?streaming=true", { headers: { "hookio-private-key": self.hook_private_key }});
