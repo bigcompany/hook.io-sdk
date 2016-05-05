@@ -1,6 +1,6 @@
 var sdk = require("../");
 
-var client = sdk.createClient({});
+var client = sdk.createClient({ promises: true });
 
 client.hook.run('marak/echo', { "foo": "bar" }).then(function (res){
   console.log(res)

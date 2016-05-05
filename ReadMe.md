@@ -2,14 +2,14 @@
 
 ## Provides a client sdk for accessing hook.io services
 
-## Status: Working, but in progress.
+## Status: Pending Version 1 Release
 
 ### Features
 
  - Provides an easy way to run [hook.io](https://hook.io) API services
  - Designed for minimal size, memory, and cpu footprint
- - Does ship with a minimalist Command Line Interface
  - Choice of `Promise` or `Callback` style APIs
+ - Does ship with a minimalist Command Line Interface
 
 ### Installation
 
@@ -19,19 +19,30 @@ npm install -g hook.io-sdk
 
 ### Available Endpoints
 
-- [x] Hook ( basic )
+- [x] Hook
 - [x] Datastore
 - [x] Logs
-- [ ] Events
-- [ ] Files
-- [ ] Domains
+- [x] Events
 - [x] Keys
-- [ ] Env
-- [ ] Hook ( advanced )
-
-
+- [ ] Files - everything but streams
+- [ ] Env - missing hook.io/env refactor
+- [ ] Domains - won't be added
 
 ### Usage
+
+#### Many Examples
+
+see: `/examples` folder
+
+**Important**
+
+Most SDK methods require an authorized API Access Key with valid role.
+
+In order to use these `hook.io-sdk` methods, you must first generate an [API Access Key](https://hook.io/keys) at hook.io.
+
+This API Access key will be used to communicate with the hook.io REST API.
+
+Simply add this `accessKey` to the client configuration.
 
 #### Command Line
 
@@ -50,9 +61,11 @@ client.hook.run('marak/echo', { "foo": "bar" }, function (err, res) {
 ```
 #### JavaScript Promise API
 
+Simply make sure to set the `promises` configuration option to `true` when calling `sdk.createClient`.
+
 ```js
 var sdk = require("hook.io-sdk");
-var client = sdk.createClient({});
+var client = sdk.createClient({ promises: true });
 client.hook.run('marak/echo', { "foo": "bar" }).then(function (res){
   console.log(res)
 }, function(err){
@@ -60,21 +73,27 @@ client.hook.run('marak/echo', { "foo": "bar" }).then(function (res){
 });
 ```
 
+Now all SDK API methods have promises!
+
 ### Configuration
 
-```bash
-export HOOK_PRIVATE_KEY='put-your-api-access-key-here'
-export HOOK_HOST='hook.io'
-export HOOK_PORT='443'
-export HOOK_PROTOCOL='https'
+```js
+{
+  host: "hook.io",
+  port: 443,
+  protocol: 'https',
+  accessKey: "12345"
+}
 ```
+
+Generate Access Keys at [https://hook.io/keys](https://hook.io/keys)
 
 ### TODO
 
 - [x] Basic client creation and configuration 
 - [x] Minimal pipeable CLI tool
-- [x] Some hook.io API Methods
-- [ ] Remove `request` in favor of `hyperquest`
+- [x] Most hook.io API Methods
+- [ ] Better ENV exports configuration
 - [ ] Add all hook.io API Methods
 - [ ] Ability to pass command line arguments
 - [ ] Ability to pipe arbitrary code snippets
