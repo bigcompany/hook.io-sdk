@@ -53,19 +53,24 @@ function Client (opts) {
     }
   }
 
-  //extendWithPromiseApi(self);
-  extendWithPromiseApi(self.datastore);
-  extendWithPromiseApi(self.domains);
-  extendWithPromiseApi(self.env);
-  extendWithPromiseApi(self.events);
-  extendWithPromiseApi(self.files);
-  extendWithPromiseApi(self.hook);
-  extendWithPromiseApi(self.keys);
-  extendWithPromiseApi(self.logs);
+  if (opts.promises === true) {
+    extendWithPromiseApi(self.datastore);
+    extendWithPromiseApi(self.domains);
+    extendWithPromiseApi(self.env);
+    extendWithPromiseApi(self.events);
+    extendWithPromiseApi(self.files);
+    extendWithPromiseApi(self.hook);
+    extendWithPromiseApi(self.keys);
+    extendWithPromiseApi(self.logs);
+    // leave out core API methods
+    // extendWithPromiseApi(self);
+  }
+
   return self;
 };
 
 Client.prototype.request = function (url, opts, cb) {
+  //console.log('making request', url, opts, typeof cb)
   var self = this;
   url =  self.protocol + "://" + self.host + ":" + self.port + url;
   if (self.attemptAuth === true) {
