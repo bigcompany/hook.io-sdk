@@ -25,6 +25,13 @@ function Client (opts) {
   self.host = opts.host || config.host || "hook.io";
   self.port = opts.port || config.port || 443;
   self.protocol = opts.protocol || config.protocol || "https";
+
+  self.additionalRequestParams = {};
+
+  if (opts.files) {
+    self.additionalRequestParams.files = opts.files;
+  }
+
   self.datastore = new DS(self);
   self.env = new Env(self);
   self.events = new Events(self);
@@ -73,18 +80,27 @@ Client.prototype.request = function (url, opts, cb) {
   //console.log('making request', url, opts, typeof cb)
   var self = this;
   url =  self.protocol + "://" + self.host + ":" + self.port + url;
+  opts.json = opts.json || {};
   if (self.attemptAuth === true) {
-    opts.json = opts.json || {};
     if (opts.json === true) {
       opts.json = {};
     }
     opts.json.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
   }
+
+  // TODO: add ability to extend other endpoints besides files
+  if (self.additionalRequestParams && typeof self.additionalRequestParams.files === "object") {
+    for (var k in self.additionalRequestParams.files) {
+      opts.json[k] = self.additionalRequestParams.files[k];
+    }
+  }
+
   if (opts.stream === true) {
     return hyper(url + "?streaming=true", { headers: { "hookio-private-key": self.hook_private_key }});
   } else {
     request(url, opts, cb);
   }
+
 };
 
 Client.prototype.error = function (err, context, cb) {
