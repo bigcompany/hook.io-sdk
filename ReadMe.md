@@ -2,8 +2,6 @@
 
 ## Provides a client sdk for accessing hook.io services
 
-## Status: Pending Version 1 Release
-
 ### Features
 
  - Provides an easy way to run [hook.io](https://hook.io) API services

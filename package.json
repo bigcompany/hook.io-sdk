@@ -1,7 +1,7 @@
 {
   "name": "hook.io-sdk",
-  "version": "1.0.1",
-  "description": "sdk api client for communicating with hook.io",
+  "version": "1.1.0",
+  "description": "sdk api client for communicating with hook.io compatible servers",
   "repository": {
     "type": "git",
     "url": "http://github.com/bigcompany/hook.io-sdk.git"
