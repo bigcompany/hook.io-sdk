@@ -82,10 +82,13 @@ Client.prototype.request = function (url, opts, cb) {
   url =  self.protocol + "://" + self.host + ":" + self.port + url;
   opts.json = opts.json || {};
   if (self.attemptAuth === true) {
-    if (opts.json === true) {
-      opts.json = {};
+    if (!opts.headers) {
+      opts.headers = {};
     }
-    opts.json.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
+    opts.headers.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
+    if (opts.json && opts.json.hook_private_key !== undefined) {
+        delete opts.json.hook_private_key;
+    }
   }
 
   // TODO: add ability to extend other endpoints besides files
