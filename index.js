@@ -6,6 +6,13 @@ client.createClient = function createClient (opts) {
 };
 
 var request = require('request');
+
+// set max concurrency for requests to host
+// Note: We could use Infinity value as default, but we will assume most users won't need to create so many concurrency connections
+request.defaults({
+  pool: { maxSockets: 10 }
+})
+
 var hyper = require('hyperquest');
 var thenify = require('thenify');
 
@@ -22,6 +29,7 @@ var config = require('./config');
 function Client (opts) {
   var self = this;
 
+  opts = opts || {};
   self.host = opts.host || config.host || "hook.io";
   self.port = opts.port || config.port || 443;
   self.protocol = opts.protocol || config.protocol || "https";
@@ -77,9 +85,10 @@ function Client (opts) {
 };
 
 Client.prototype.request = function (url, opts, cb) {
-  //console.log('making request', url, opts, typeof cb)
   var self = this;
   url =  self.protocol + "://" + self.host + ":" + self.port + url;
+  console.log('making request', url, opts, typeof cb)
+  
   opts.json = opts.json || {};
   if (self.attemptAuth === true) {
     if (opts.json === true) {
@@ -96,7 +105,14 @@ Client.prototype.request = function (url, opts, cb) {
   }
 
   if (opts.stream === true) {
-    return hyper(url + "?streaming=true", { headers: { "hookio-private-key": self.hook_private_key }});
+    //return request(url, opts);
+    var _url = url + "?path=" + opts.json.path;
+    opts.method = opts.method || "POST";
+    
+    //console.log('streaming', _url, opts);
+    var stream = hyper(_url, { method: opts.method, headers: { "hookio-private-key": self.hook_private_key }});
+    //var stream = request(_url, opts);
+    return stream;
   } else {
     request(url, opts, cb);
   }
