@@ -10,7 +10,8 @@ var client = sdk.createClient({
   protocol: config.protocol
 });
 
-client.hook.pull({ name: "echo", owner: "david" }, function (err, stat) {
+// TODO: parse argv for name and owner
+client.hook.clone({ name: "echo", owner: "david" }, function (err, stat) {
   if (err) {
     console.log(err)
     return;

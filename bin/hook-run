@@ -10,15 +10,22 @@ var client = sdk.createClient({
   protocol: config.protocol
 });
 
-// instantiate
-var table = new Table({
-    head: ['name', 'mtime', 'ctime']
-  , colWidths: [30, 25, 25]
-});
 var argv = require('minimist')(process.argv.slice(2));
-// TODO: map incoming argv flags / data as params to service
+if (typeof argv._[0] === "undefined") {
+  console.log('hook name is required!');
+  process.exit();
+  return;
+}
+// map incoming argv flags / data as params to service
+var params = {};
+Object.keys(argv).forEach(function (k, v) {
+  if (k !== "_") {
+    params[k] = argv[k];
+  }
+});
+
 // TODO: got owner of hook from somewhere
-client.hook.run({ owner: 'david', name: argv._[0] }, function (err, result) {
+client.hook.run({ owner: 'david', name: argv._[0], data: params }, function (err, result) {
   if (err) {
     console.log(err)
     return;
