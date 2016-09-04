@@ -1,0 +1,61 @@
+// creates scaffold project for service
+// TODO: prompt style like npm does
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+
+var _service = {
+  "name": "test-init-service",
+  "source": 'echo "hello"', 
+  "language": "bash",
+  "schema": {
+    "foo": {
+      "type": "string",
+      "default": "bar"
+    }
+  },
+  "view": "this is a custom view: {{hook.output}}",
+  "presenter": function viewPresenter (opts, cb) {
+    var $ = this.$;
+    cb(null, $.html());
+  },
+  "version": "1.0.0",
+  "description": "this is the test init service",
+  "main": "service.sh",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "stack service.sh"
+  },
+  "author": "marak",
+  "license": "MIT"
+};
+
+var pkgProps = ['name', 'language', 'version', 'description', 'main', 'scripts', 'author', 'license']
+
+var pkg = {};
+pkgProps.forEach(function(p){
+  pkg[p] = _service[p];
+});
+
+var argv = require('minimist')(process.argv.slice(2));
+var _root = argv._[0] || process.cwd();
+
+// create root if it doesnt already exist
+mkdirp.sync(_root);
+
+// write service source code file
+// TODO: is source actually code property?
+fs.writeFileSync(_root + "/service.sh", _service.source);
+
+// write service schema file
+fs.writeFileSync(_root + "/schema.js", 'module.exports = ' + JSON.stringify(_service.schema, true, 2));
+
+// write service view file
+fs.writeFileSync(_root + "/view.html", _service.view);
+
+// write package.json file
+fs.writeFileSync(_root + "/package.json", JSON.stringify(pkg, true, 2));
+
+
+
+
+console.log(_root, _service)

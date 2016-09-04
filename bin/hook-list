@@ -1,0 +1,40 @@
+#!/usr/local/bin/node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var Table = require('cli-table');
+var moment = require('moment');
+
+// instantiate
+var table = new Table({
+    head: ['name', 'mtime', 'ctime']
+  , colWidths: [30, 25, 25]
+});
+
+
+
+
+client.hook.all({ owner: 'david' }, function (err, hooks) {
+  if (err) {
+    console.log(err)
+    return;
+  }
+  // table is an Array, so you can `push`, `unshift`, `splice` and friends
+  
+  hooks.forEach(function(h){
+    table.push(
+        [h.name, moment(h.mtime).format("MMM DD YYYY HH:mm:ss"), moment(h.ctime).format("MMM DD YYYY HH:mm:ss")]
+    );
+  });
+  
+  console.log(table.toString());
+  
+});

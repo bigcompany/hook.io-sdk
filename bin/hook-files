@@ -1,0 +1,73 @@
+#!/usr/local/bin/node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+if (typeof process.env.hook_private_key !== "undefined") {
+  hook_private_key =  process.env.hook_private_key;
+}
+
+if (typeof process.env.hook_host !== "undefined") {
+  config.host = process.env.hook_host;
+}
+
+if (typeof process.env.hook_port !== "undefined") {
+  config.port =  Number(process.env.hook_port);
+}
+
+if (typeof process.env.hook_protocol !== "undefined") {
+  config.protocol =  process.env.hook_protocol;
+}
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var localPath = process.cwd();
+var prompt = require('prompt-lite');
+
+  //
+  // Start the prompt
+  //
+  prompt.start();
+  
+  var property = {
+    name: 'yesno',
+    message: 'upload ' + localPath + " ?",
+    validator: /y[es]*|n[o]?/,
+    warning: 'Must respond yes or no',
+    default: 'no'
+  };
+  
+  prompt.get(property, function (err, result) {
+     //
+     // Log the results.
+     //
+     console.log('Command-line input received:');
+     console.log(result)
+     if (result.yesno === "yes") {
+       
+       // uses options config with custom upload target path
+       client.files.upload({
+         localPath: localPath,
+         targetPath: 'marak/v1/'
+       }, function (err, result) {
+         console.log(err, result);
+       });
+
+     }
+   });
+   
+   return;
+
+
+// TODO: add confirmation of file upload path before go
+// uses default path ( which is root )
+/*
+client.files.upload('./test/fixtures/files/bobby/', function (err, result) {
+  console.log(err, result);
+});
+*/

@@ -1,0 +1,28 @@
+#!/usr/local/bin/node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var argv = require('minimist')(process.argv.slice(2));
+
+var deployPath = argv._[0] || process.cwd();
+
+client.hook.deploy({ path: deployPath }, function (err, stat) {
+  if (err) {
+    console.log(err)
+    return;
+  }
+  console.log(stat)
+  /*
+  hooks.forEach(function(h){
+    console.log(h.name, h.mtime, h.ctime);
+  });
+  */
+});

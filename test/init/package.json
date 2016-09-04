@@ -1,0 +1,13 @@
+{
+  "name": "test-init-service",
+  "language": "bash",
+  "version": "1.0.0",
+  "description": "this is the test init service",
+  "main": "service.sh",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "stack service.sh"
+  },
+  "author": "marak",
+  "license": "MIT"
+}

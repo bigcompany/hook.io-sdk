@@ -1,0 +1,24 @@
+#!/usr/local/bin/node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+client.hook.pull({ name: "echo", owner: "david" }, function (err, stat) {
+  if (err) {
+    console.log(err)
+    return;
+  }
+  console.log(stat)
+  /*
+  hooks.forEach(function(h){
+    console.log(h.name, h.mtime, h.ctime);
+  });
+  */
+});
