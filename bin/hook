@@ -1,84 +1,26 @@
-#!/usr/local/bin/node
-var sdk = require("../");
+#!/usr/bin/env node
+
 var config = require('../config');
-var hook_private_key = "";
+var program = require('commander');
+var sdk = require("../");
 
-if (typeof process.env.hook_private_key !== "undefined") {
-  hook_private_key =  process.env.hook_private_key;
-}
+program
+  .version('2.0.0')
+  .command('clone', 'clones existing hook')
+  .command('deploy', 'deploy hook to the cloud')
+  // .command('files', 'files API')
+  .command('alias', 'create hostname alias for hook')  
+  .command('info', 'display hook info')
+  .command('init', 'initialize new local service')
+  .command('list', 'list all hooks')
+  .command('run', 'run hook in the cloud');
 
-if (typeof process.env.hook_host !== "undefined") {
-  config.host = process.env.hook_host;
-}
-
-if (typeof process.env.hook_port !== "undefined") {
-  config.port =  Number(process.env.hook_port);
-}
-
-if (typeof process.env.hook_protocol !== "undefined") {
-  config.protocol =  process.env.hook_protocol;
-}
-
-var client = sdk.createClient({
-  hook_private_key: hook_private_key,
-  host: config.host,
-  port: config.port,
-  protocol: config.protocol
+program.on('--help', function(){
+  console.log('  Notes:');
+  console.log('');
+  console.log('    All commands are available as separate git style binaries');
+  console.log('    Such as: hook-list, hook-info, hook-run, hook-deploy, etc');
+  console.log('');
 });
 
-var request = require('request');
-var colors = require('colors');
-
-var argv = require('minimist')(process.argv.slice(2));
-
-var targetUrl = argv._[0] || "marak/echo";
-// TODO: unhard-code
-var targetContext = "hook";
-var targetAction = argv._[1] || "run";
-//console.log(targetUrl)
-
-// STDIN / REQUEST OUT stream processing
-process.stdin.setEncoding('utf8');
-
-var streaming = true;
-
-// console.log('opening stream to ', url);
-
-function makeRequest (chunk) {
-  //var url = "http://hook.io/" + targetUrl;
-  //targetAction
-  // console.log('making request', targetContext, targetAction, targetUrl, chunk)
-  client[targetContext][targetAction](targetUrl, { body: chunk }, { streaming: streaming, output: process.stdout }, function (err, res) {
-    if (err) {
-      console.log(err);
-      process.exit(1);
-    }
-    //console.log(res);
-    //console.log('isStreaming', streaming)
-    if (streaming === false) {
-      process.exit(0);
-    }
-  });
-};
-
-if (process.stdin.isTTY) {
-  streaming = true;
-  // handle regular command
-  makeRequest();
-} else {
-  // handle piped content
-  process.stdin.on('readable', function() {
-    //console.log("READING".red)
-    var chunk = process.stdin.read();
-    if (chunk !== null) {
-      //console.log(chunk);
-      makeRequest(chunk)
-    }
-  });
-  process.stdin.on('end', function() {
-    //console.log('ended event stdin')
-    // check if any data was recevived via stdin, if not, send json payload
-    //process.stdout.write('end');
-    //stream.end();
-  });
-}
+program.parse(process.argv);

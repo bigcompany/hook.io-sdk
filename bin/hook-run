@@ -1,7 +1,14 @@
 #!/usr/local/bin/node
+
+// TODO: switch to commander API
+// .option('-t, --timeout <number>', 'Sets max timeout of service in milliseconds');
+
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
+
+// STDIN / REQUEST OUT stream processing
+process.stdin.setEncoding('utf8');
 
 var client = sdk.createClient({
   hook_private_key: hook_private_key,
@@ -24,11 +31,38 @@ Object.keys(argv).forEach(function (k, v) {
   }
 });
 
-// TODO: got owner of hook from somewhere
-client.hook.run({ owner: 'david', name: argv._[0], data: params }, function (err, result) {
-  if (err) {
-    console.log(err)
-    return;
-  }
-  console.log(result)
-});
+function makeRequest (data) {
+  // TODO: got owner of hook from somewhere
+  client.hook.run({ owner: 'david', name: argv._[0], data: data }, function (err, result) {
+    if (err) {
+      console.log(err)
+      return;
+    }
+    console.log(result)
+  });
+}
+
+// TODO: add better support for stdin processing
+if (process.stdin.isTTY) {
+  streaming = true;
+  // handle regular command
+  makeRequest(params);
+} else {
+  // handle piped content
+  process.stdin.on('readable', function() {
+    //console.log("READING".red)
+    var chunk = process.stdin.read();
+    if (chunk !== null) {
+      //console.log(chunk);
+      makeRequest(chunk)
+    } else {
+      makeRequest(params)
+    }
+  });
+  process.stdin.on('end', function() {
+    //console.log('ended event stdin')
+    // check if any data was recevived via stdin, if not, send json payload
+    //process.stdout.write('end');
+    //stream.end();
+  });
+}

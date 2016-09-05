@@ -1,0 +1,25 @@
+#!/usr/local/bin/node
+
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var program = require('commander');
+
+program
+  .version('2.0.0');
+
+program
+  .command('create', 'create new alias', { isDefault: true })
+  .command('list', 'list all existing aliases')
+
+  // .option('-u, --url [string]', 'url of the hook');
+
+program.parse(process.argv);
+
+if (typeof program.name === "undefined") {
+//  console.log('which hook?');
+//  process.exit();
+}
+// TODO: curry for alternate options such as name / url
+// TODO: parse argv for name and owner

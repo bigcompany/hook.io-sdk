@@ -1,0 +1,28 @@
+#!/usr/local/bin/node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var argv = require('minimist')(process.argv.slice(2));
+var hookName = argv._[0];
+
+if (typeof hookName === "undefined") {
+  console.log('which hook?');
+  process.exit();
+}
+
+// TODO: parse argv for name and owner
+client.hook.get({ name: hookName, owner: "david" }, function (err, stat) {
+  if (err) {
+    console.log(err)
+    return;
+  }
+  console.log(stat)
+});

@@ -1,30 +1,31 @@
 #!/usr/local/bin/node
+
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
 
 var program = require('commander');
 
+
+var Table = require('cli-table');
+var moment = require('moment');
+
+// instantiate
+var table = new Table({
+    head: ['name', 'url', 'mtime']
+  , colWidths: [25, 35, 20]
+});
+
+
+
 program
   .version('2.0.0')
-  .option('-n, --name [string]', 'name of the hook')
   .option('-o, --owner [string]', 'owner of the hook');
-  // .option('-u, --url [string]', 'url of the hook');
 
-program.on('--help', function(){
-  console.log('  Notes:');
-  console.log('');
-  console.log('    All commands are available as separate git style binaries');
-  console.log('    Such as: hook-list, hook-info, hook-run, hook-deploy, etc');
-  console.log('');
-});
+  // .option('-u, --url [string]', 'url of the hook');
 
 program.parse(process.argv);
 
-if (typeof program.name === "undefined") {
-  console.log('which hook?');
-  process.exit();
-}
 // TODO: curry for alternate options such as name / url
 // TODO: parse argv for name and owner
 var client = sdk.createClient({
@@ -34,10 +35,17 @@ var client = sdk.createClient({
   protocol: config.protocol
 });
 
-client.hook.clone({ name: program.name, owner: "david" }, function (err, stat) {
+
+client.domains.all(function (err, hooks) {
   if (err) {
     console.log(err)
     return;
   }
-  console.log(stat)
+  // table is an Array, so you can `push`, `unshift`, `splice` and friends
+  hooks.forEach(function(h){
+    table.push(
+        [h.name, h.forwardUrl, moment(h.mtime).format("MMM DD YYYY HH:mm:ss")]
+    );
+  });
+  console.log(table.toString());
 });
