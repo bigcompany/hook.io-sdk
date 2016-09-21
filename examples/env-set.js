@@ -2,6 +2,7 @@ var sdk = require("../");
 
 var client = sdk.createClient({});
 
-client.env.set({ "a": "1", "b": null },function (err, e){
+// Note: To delete an existing value, simply set it to null
+client.env.set({ "a": "1", "b": null, "c": { "foo": "bar" } },function (err, e){
   console.log(err, e);
 });

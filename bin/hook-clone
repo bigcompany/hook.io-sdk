@@ -2,12 +2,13 @@
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
+var hooks = require('hook.io-hooks');
 
 var program = require('commander');
 
 program
   .version('2.0.0')
-  .option('-n, --name [string]', 'name of the hook')
+  .option('-n, --name [string]', 'name of the hook', '')
   .option('-o, --owner [string]', 'owner of the hook');
   // .option('-u, --url [string]', 'url of the hook');
 
@@ -21,9 +22,31 @@ program.on('--help', function(){
 
 program.parse(process.argv);
 
-if (typeof program.name === "undefined") {
-  console.log('which hook?');
-  process.exit();
+if (program.name.length === 0) {
+  var argv = require('minimist')(process.argv.slice(2));
+  var serviceName = argv._[0] || "";
+  if (serviceName.length > 0) {
+    // parse serviceName to determine the string format
+    // TODO: move to common lib
+    // TODO: is the service an example hook with single name? if so, assume hook.io example service
+    var parts = serviceName.split('/');
+    if (parts.length === 1) {
+      if (typeof hooks.services[parts[0]] === "object") {
+        var example = hooks.services[parts[0]];
+        program.name = example.name;
+        program.owner = "examples"; // TODO: examples
+      } else {
+        console.log('Cannot find any services or example services with name: ' + parts[0])
+        process.exit();
+      }
+      // single word, try exampples
+    }
+    // TODO: is the service a full url? if so, assume hook.io url
+    // TOOD: is the service an /:owner/:hook format, if so assume hook.io owner / name pair
+  } else {
+    console.log('name parameter is required!')
+    process.exit();
+  }
 }
 // TODO: curry for alternate options such as name / url
 // TODO: parse argv for name and owner
@@ -34,7 +57,7 @@ var client = sdk.createClient({
   protocol: config.protocol
 });
 
-client.hook.clone({ name: program.name, owner: "david" }, function (err, stat) {
+client.hook.clone({ name: program.name, owner: program.owner }, function (err, stat) {
   if (err) {
     console.log(err)
     return;

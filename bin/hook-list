@@ -19,10 +19,7 @@ var table = new Table({
   , colWidths: [30, 25, 25]
 });
 
-
-
-
-client.hook.all({ owner: 'david' }, function (err, hooks) {
+client.hook.all(function (err, hooks) {
   if (err) {
     console.log(err)
     return;

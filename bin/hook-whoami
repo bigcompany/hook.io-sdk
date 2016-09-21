@@ -1,0 +1,5 @@
+#!/usr/local/bin/node
+
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+console.log(config.user, config.email)

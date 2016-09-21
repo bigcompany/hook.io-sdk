@@ -9,11 +9,13 @@ program
   .command('clone', 'clones existing hook')
   .command('deploy', 'deploy hook to the cloud')
   // .command('files', 'files API')
-  .command('alias', 'create hostname alias for hook')  
+  .command('alias', 'create hostname alias for hook')
+  .command('examples', 'show list of example hooks')
   .command('info', 'display hook info')
   .command('init', 'initialize new local service')
   .command('list', 'list all hooks')
-  .command('run', 'run hook in the cloud');
+  .command('run', 'run hook in the cloud')
+  .command('whoami', 'returns currently logged in user');
 
 program.on('--help', function(){
   console.log('  Notes:');

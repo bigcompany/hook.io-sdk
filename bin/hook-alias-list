@@ -16,8 +16,6 @@ var table = new Table({
   , colWidths: [25, 35, 20]
 });
 
-
-
 program
   .version('2.0.0')
   .option('-o, --owner [string]', 'owner of the hook');
@@ -34,7 +32,6 @@ var client = sdk.createClient({
   port: config.port,
   protocol: config.protocol
 });
-
 
 client.domains.all(function (err, hooks) {
   if (err) {

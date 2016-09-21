@@ -87,7 +87,6 @@ function Client (opts) {
 Client.prototype.request = function (url, opts, cb) {
   var self = this;
   url =  self.protocol + "://" + self.host + ":" + self.port + url;
-  console.log('making request', url, opts, typeof cb)
   
   opts.json = opts.json || {};
   if (self.attemptAuth === true) {
@@ -97,6 +96,8 @@ Client.prototype.request = function (url, opts, cb) {
     opts.json.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
   }
 
+  // console.log('making request', url, opts, typeof cb)
+
   // TODO: add ability to extend other endpoints besides files
   if (self.additionalRequestParams && typeof self.additionalRequestParams.files === "object") {
     for (var k in self.additionalRequestParams.files) {
@@ -104,17 +105,24 @@ Client.prototype.request = function (url, opts, cb) {
     }
   }
 
+  opts.headers = { "hookio-private-key": self.hook_private_key };
+
   if (opts.stream === true) {
     //return request(url, opts);
     var _url = url + "?path=" + opts.json.path;
     opts.method = opts.method || "POST";
-    
-    //console.log('streaming', _url, opts);
     var stream = hyper(_url, { method: opts.method, headers: { "hookio-private-key": self.hook_private_key }});
-    //var stream = request(_url, opts);
     return stream;
   } else {
-    request(url, opts, cb);
+    request(url, opts, function (err, res, body){
+      if (err) {
+        return cb(err);
+      }
+      if (res.statusCode === 404) {
+        return cb(new Error('Could not find requested URI: ' + url), res, body)
+      }
+      cb(err, res, body);
+    });
   }
 
 };
