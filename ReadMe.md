@@ -22,9 +22,9 @@ npm install -g hook.io-sdk
 - [x] Logs
 - [x] Events
 - [x] Keys
-- [ ] Files - everything but streams
-- [ ] Env - missing hook.io/env refactor
-- [ ] Domains - won't be added
+- [X] Files - everything but streams
+- [X] Env - missing hook.io/env refactor
+- [X] Domains
 
 ### Usage
 
@@ -53,7 +53,8 @@ echo "hello" | hook marak/echo
 ```js
 var sdk = require("hook.io-sdk");
 var client = sdk.createClient({});
-client.hook.run('marak/echo', { "foo": "bar" }, function (err, res) {
+
+client.hook.run({ owner: "examples", name: "echo", method: "POST", data:  { "foo": "bar" } }, function (err, res) {
   console.log(err, res)
 });
 ```
@@ -64,7 +65,8 @@ Simply make sure to set the `promises` configuration option to `true` when calli
 ```js
 var sdk = require("hook.io-sdk");
 var client = sdk.createClient({ promises: true });
-client.hook.run('marak/echo', { "foo": "bar" }).then(function (res){
+
+client.hook.run({ owner: "examples", name: "echo", method: "POST", data:  { "foo": "bar" } }).then(function (res){
   console.log(res)
 }, function(err){
   console.log('error', err)
@@ -92,8 +94,8 @@ Generate Access Keys at [https://hook.io/keys](https://hook.io/keys)
 - [x] Minimal pipeable CLI tool
 - [x] Most hook.io API Methods
 - [ ] Better ENV exports configuration
-- [ ] Add all hook.io API Methods
-- [ ] Ability to pass command line arguments
+- [X] Add all hook.io API Methods
+- [X] Ability to pass command line arguments
 - [ ] Ability to pipe arbitrary code snippets
-- [ ] Multiple programming language implementations
+- [X] Multiple programming language implementations
 - [ ] Add `ws://` protocol for Websockets API
