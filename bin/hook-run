@@ -1,11 +1,9 @@
 #!/usr/local/bin/node
 
-// TODO: switch to commander API
-// .option('-t, --timeout <number>', 'Sets max timeout of service in milliseconds');
-
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
+var examples = require('microservice-examples');
 
 // STDIN / REQUEST OUT stream processing
 process.stdin.setEncoding('utf8');
@@ -23,6 +21,37 @@ if (typeof argv._[0] === "undefined") {
   process.exit();
   return;
 }
+
+// parse _name to determine the string format
+// TODO: is the service an example hook with single name? if so, assume hook.io example service
+var _name = argv._[0];
+var parts = _name.split('/');
+var service = {
+  name: _name,
+  owner: "examples"
+}
+
+// TODO: is the service a full url? if so, assume hook.io url
+
+if (parts.length === 2) {
+  // TOOD: is the service an /:owner/:hook format, if so assume hook.io owner / name pair
+  service.owner = parts[0];
+  service.name = parts[1];
+}
+
+if (parts.length === 1) {
+  // single word, try examples
+  // check to see if example
+  if (typeof examples.services[parts[0]] === "object") {
+    var example = examples.services[parts[0]];
+    service.name = example.name;
+    service.owner = "examples";
+  }
+  // single word, try exampples
+  // TODO: is the service a full url? if so, assume hook.io url
+  // TOOD: is the service an /:owner/:hook format, if so assume hook.io owner / name pair
+}
+
 // map incoming argv flags / data as params to service
 var params = {};
 Object.keys(argv).forEach(function (k, v) {
@@ -33,7 +62,7 @@ Object.keys(argv).forEach(function (k, v) {
 
 function makeRequest (data) {
   // TODO: got owner of hook from somewhere
-  client.hook.run({ owner: 'david', name: argv._[0], data: data }, function (err, result) {
+  client.hook.run({ owner: service.owner, name: service.name, data: data }, function (err, result) {
     if (err) {
       console.log(err)
       return;
