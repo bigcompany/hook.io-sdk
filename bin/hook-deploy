@@ -14,15 +14,22 @@ var argv = require('minimist')(process.argv.slice(2));
 
 var deployPath = argv._[0] || process.cwd();
 
-client.hook.deploy({ path: deployPath }, function (err, stat) {
+client.hook.deploy({ path: deployPath }, function (err, result) {
   if (err) {
-    console.log(err)
+    console.log('There was an issue communicating with hook.io');
+    console.log('Error: ' + err.message);
     return;
   }
-  console.log(stat)
-  /*
-  hooks.forEach(function(h){
-    console.log(h.name, h.mtime, h.ctime);
-  });
-  */
+  if (result.status === 404) {
+    console.log(result);
+    return;
+  }
+  if (result.status === "created") {
+    console.log('created new service!');
+    console.log(result.hook.owner + '/' + result.hook.name);
+  }
+  if (result.status === "updated") {
+    console.log('updated service!');
+    console.log(result.hook.owner + '/' + result.hook.name);
+  }
 });

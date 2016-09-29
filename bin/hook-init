@@ -1,40 +1,71 @@
-// creates scaffold project for service
-// TODO: prompt style like npm does
-var fs = require('fs');
-var mkdirp = require('mkdirp');
+#!/usr/local/bin/node
 
-var _service = {
-  "name": "test-init-service",
-  "source": 'echo "hello"', 
-  "language": "bash",
-  "schema": {
-    "foo": {
-      "type": "string",
-      "default": "bar"
+var path = require('path')
+var helpers = require('../lib/helpers');
+var fs = require('fs')
+var examples = require('microservice-examples');
+var prompt = require('mschema-prompt');
+
+var handlers = {
+  'name' : {
+     default: path.basename(process.cwd()),
+     conform: function (val, cb) {
+       cb(null, val);
+     }
+  },
+  'version' : {
+    default: '1.0.0',
+    conform: function (val, cb) {
+      cb(null, val);
     }
   },
-  "view": "this is a custom view: {{hook.output}}",
-  "presenter": function viewPresenter (opts, cb) {
-    var $ = this.$;
-    cb(null, $.html());
+  'description': {
+    default: ""
   },
-  "version": "1.0.0",
-  "description": "this is the test init service",
-  "main": "service.sh",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "stack service.sh"
+  'language' : {
+    default: "javascript",
+    // enum: ["javascript", "bash"],
+    conform: function (val, cb) {
+      // check against valid langs
+      // TODO: add all langs / use mschema enum
+      var langs = ["javascript", "bash"];
+      if (langs.indexOf(val) === -1) {
+        cb(new Error('Invalid option. Options include: \njavascript\nbash\nbabel'));
+      } else {
+        var _main = 'index' + helpers.getExtensionFromLanguage(val);
+        handlers.main.default = _main;
+        console.log('using ', _main)
+        cb(null, val);
+      }
+    }
   },
-  "author": "marak",
-  "license": "MIT"
+  'main': {
+    default: "index.js"
+  },
+  "license": {
+    default: "MIT"
+  }
+}
+
+prompt(handlers, complete);
+function complete (err, data) {
+  data.scripts = {
+    "start": "stack .",
+    "test": 'echo "no tests available"'
+  }
+  data.author = "marak";
+  var example = examples.services[data.language + "-hello-world"];
+  var _root = process.cwd();
+  // TODO: write sources based on example properties
+  fs.writeFileSync(_root + "/" + data.main, example.source);
+  fs.writeFileSync(_root + "/package.json", JSON.stringify(data, true, 2));
+  console.log('Created new microservice!');
+  console.log('Try running `npm start`');
+  console.log('Try running `hook-deploy to push service to cloud`');
+  process.exit();
 };
 
-var pkgProps = ['name', 'language', 'version', 'description', 'main', 'scripts', 'author', 'license']
-
-var pkg = {};
-pkgProps.forEach(function(p){
-  pkg[p] = _service[p];
-});
+/*
 
 var argv = require('minimist')(process.argv.slice(2));
 var _root = argv._[0] || process.cwd();
@@ -55,7 +86,4 @@ fs.writeFileSync(_root + "/view.html", _service.view);
 // write package.json file
 fs.writeFileSync(_root + "/package.json", JSON.stringify(pkg, true, 2));
 
-
-
-
-console.log(_root, _service)
+*/
