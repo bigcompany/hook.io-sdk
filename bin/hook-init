@@ -5,6 +5,7 @@ var helpers = require('../lib/helpers');
 var fs = require('fs')
 var examples = require('microservice-examples');
 var prompt = require('mschema-prompt');
+var config = require('../config');
 
 var handlers = {
   'name' : {
@@ -48,13 +49,19 @@ var handlers = {
 
 prompt(handlers, complete);
 function complete (err, data) {
+  if (err) {
+    // cancelled
+    console.log(err);
+    return;
+  }
+  data = data || {};
   data.scripts = {
     "start": "stack .",
     // could use instead:
     // "start": "./node_modules/stackvana/bin/stack .",
     "test": 'echo "no tests available"'
   }
-  data.author = "marak";
+  data.author = config.user;
   var example = examples.services[data.language + "-hello-world"];
   var _root = process.cwd();
   // TODO: add deps for stack
@@ -71,7 +78,7 @@ function complete (err, data) {
     data.dependencies['babel-preset-stage-3'] = "^6.16.0";
   }
   // TODO: write sources based on example properties
-  //fs.writeFileSync(_root + "/" + data.main, example.source);
+  fs.writeFileSync(_root + "/" + data.main, example.source);
   fs.writeFileSync(_root + "/package.json", JSON.stringify(data, true, 2));
   console.log('Created new microservice!');
   // TODO: automated npm install?

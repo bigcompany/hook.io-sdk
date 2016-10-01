@@ -62,5 +62,5 @@ client.hook.clone({ name: program.name, owner: program.owner }, function (err, s
     console.log(err)
     return;
   }
-  console.log(stat)
+  console.log('cloned ' + program.name);
 });
