@@ -28,13 +28,12 @@ var handlers = {
     conform: function (val, cb) {
       // check against valid langs
       // TODO: add all langs / use mschema enum
-      var langs = ["javascript", "bash"];
+      var langs = ["javascript", "bash", "babel"];
       if (langs.indexOf(val) === -1) {
         cb(new Error('Invalid option. Options include: \njavascript\nbash\nbabel'));
       } else {
         var _main = 'index' + helpers.getExtensionFromLanguage(val);
         handlers.main.default = _main;
-        console.log('using ', _main)
         cb(null, val);
       }
     }
@@ -51,17 +50,34 @@ prompt(handlers, complete);
 function complete (err, data) {
   data.scripts = {
     "start": "stack .",
+    // could use instead:
+    // "start": "./node_modules/stackvana/bin/stack .",
     "test": 'echo "no tests available"'
   }
   data.author = "marak";
   var example = examples.services[data.language + "-hello-world"];
   var _root = process.cwd();
+  // TODO: add deps for stack
+  // TODO: add any additional deps for language ( babel needs)
+  data.dependencies = {
+    "stack": "3.x.x"
+  };
+  if (data.language === "babel") {
+    data.dependencies['babel-core'] = "^6.16.0";
+    data.dependencies['babel-plugin-syntax-async-functions'] = "^6.13.0";
+    data.dependencies['babel-plugin-transform-regenerator'] = "^6.16.1";
+    data.dependencies['babel-polyfill'] = "^6.16.0";
+    data.dependencies['babel-preset-es2015'] = "^6.16.0";
+    data.dependencies['babel-preset-stage-3'] = "^6.16.0";
+  }
   // TODO: write sources based on example properties
-  fs.writeFileSync(_root + "/" + data.main, example.source);
+  //fs.writeFileSync(_root + "/" + data.main, example.source);
   fs.writeFileSync(_root + "/package.json", JSON.stringify(data, true, 2));
   console.log('Created new microservice!');
-  console.log('Try running `npm start`');
-  console.log('Try running `hook-deploy to push service to cloud`');
+  // TODO: automated npm install?
+  console.log('run: `npm install`');
+  console.log('then: `npm start`');
+  console.log('You can also try running `hook-deploy to push service to cloud`');
   process.exit();
 };
 
