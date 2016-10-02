@@ -2,9 +2,7 @@
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
-var requireServiceSync = require('stackvana').requireServiceSync;
-console.log('Not implemented yet.')
-return;
+
 var client = sdk.createClient({
   hook_private_key: hook_private_key,
   host: config.host,
@@ -17,10 +15,11 @@ var hookName = argv._[0];
 if (typeof hookName === "undefined") {
   // TODO: check to see if package.json is here
   // if so, compare that to see if cloud version exists
-  var _service = requireServiceSync({ path: process.cwd() });
+  console.log('hook name is required');
+  process.exit();
 } else {
   // TODO: use config name
-  client.hook.get({ name: hookName, owner: "examples" }, function (err, stat) {
+  client.hook.destroy({ name: hookName, owner: config.user }, function (err, stat) {
     if (err) {
       console.log(err)
       return;

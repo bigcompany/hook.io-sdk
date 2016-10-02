@@ -46,6 +46,9 @@ if (parts.length === 1) {
     var example = examples.services[parts[0]];
     service.name = example.name;
     service.owner = "examples";
+  } else {
+    service.name = parts[0];
+    service.owner = config.user;
   }
   // single word, try exampples
   // TODO: is the service a full url? if so, assume hook.io url
