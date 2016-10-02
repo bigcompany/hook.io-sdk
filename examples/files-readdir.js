@@ -2,6 +2,6 @@ var sdk = require("../");
 
 var client = sdk.createClient({});
 
-client.files.readdir('hookio-vfs', function (err, file) {
-  console.log(err, file);
+client.files.readdir('', function (err, files) {
+  console.log(err, files);
 });
