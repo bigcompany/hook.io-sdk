@@ -11,7 +11,7 @@ program
   // .command('files', 'files API')
   .command('alias', 'create hostname alias for hook')
   .command('examples', 'show list of example hooks')
-  .command('info', 'display hook info')
+  .command('get', 'get hook document')
   .command('init', 'initialize new local service')
   .command('list', 'list all hooks')
   .command('run', 'run hook in the cloud')
