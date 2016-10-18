@@ -6,7 +6,7 @@
   "main": "service.sh",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "stack service.sh"
+    "start": "microcule service.sh"
   },
   "author": "marak",
   "license": "MIT"

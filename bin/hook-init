@@ -56,9 +56,8 @@ function complete (err, data) {
   }
   data = data || {};
   data.scripts = {
-    "start": "stack .",
+    "start": "microcule .",
     // could use instead:
-    // "start": "./node_modules/stackvana/bin/stack .",
     "test": 'echo "no tests available"'
   }
   data.author = config.user;
@@ -67,7 +66,7 @@ function complete (err, data) {
   // TODO: add deps for stack
   // TODO: add any additional deps for language ( babel needs)
   data.dependencies = {
-    "stack": "3.x.x"
+    "microcule": "4.x.x"
   };
   if (data.language === "babel") {
     data.dependencies['babel-core'] = "^6.16.0";

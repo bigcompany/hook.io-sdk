@@ -28,39 +28,37 @@ npm install -g hook.io-sdk
 
 ### Usage
 
-#### Many Examples
+#### 40+ SDK Code Examples
 
-see: `/examples` folder
+The easiest way to get started using the SDK is by checking out the examples folder.
+
+see: `/examples`
 
 **Important**
 
-Most SDK methods require an authorized API Access Key with valid role.
+Most SDK methods require an authorized API Access Key with a corresponding access role. In order to use these authorized API methods, you must first generate an [API Access Key](https://hook.io/keys) for free at hook.io.
 
-In order to use these `hook.io-sdk` methods, you must first generate an [API Access Key](https://hook.io/keys) at hook.io.
+Once you have an API Access key, simply add this `accessKey` to the sdk client configuration. This will enable authorized communication with the hook.io REST API.
 
-This API Access key will be used to communicate with the hook.io REST API.
 
-Simply add this `accessKey` to the client configuration.
-
-#### Command Line
-
-```bash
-echo "hello" | hook marak/echo
-```
-
-#### JavaScript Callback API
+#### Callback Style API
 
 ```js
 var sdk = require("hook.io-sdk");
 var client = sdk.createClient({});
 
-client.hook.run({ owner: "examples", name: "echo", method: "POST", data:  { "foo": "bar" } }, function (err, res) {
+client.hook.run({
+  owner: "examples",
+  name: "echo",
+  method: "POST",
+  data:  { "foo": "bar" }
+ }, function (err, res) {
   console.log(err, res)
 });
 ```
-#### JavaScript Promise API
+#### Promise Style API
 
-Simply make sure to set the `promises` configuration option to `true` when calling `sdk.createClient`.
+To enable promises, make sure to set the `promises` configuration option to `true` when calling `sdk.createClient`.
 
 ```js
 var sdk = require("hook.io-sdk");
@@ -90,12 +88,5 @@ Generate Access Keys at [https://hook.io/keys](https://hook.io/keys)
 
 ### TODO
 
-- [x] Basic client creation and configuration 
-- [x] Minimal pipeable CLI tool
-- [x] Most hook.io API Methods
 - [ ] Better ENV exports configuration
-- [X] Add all hook.io API Methods
-- [X] Ability to pass command line arguments
-- [ ] Ability to pipe arbitrary code snippets
-- [X] Multiple programming language implementations
 - [ ] Add `ws://` protocol for Websockets API

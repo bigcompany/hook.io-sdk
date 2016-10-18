@@ -33,6 +33,7 @@
     "commander": "^2.9.0",
     "hyperquest": "^1.3.0",
     "map-stream": "0.0.6",
+    "microcule": "^4.0.1",
     "microservice-examples": "*",
     "minimist": "^1.2.0",
     "moment": "^2.14.1",
