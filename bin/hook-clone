@@ -2,7 +2,7 @@
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
-var hooks = require('hook.io-hooks');
+var hooks = require('microservice-examples');
 
 var program = require('commander');
 
@@ -57,7 +57,17 @@ var client = sdk.createClient({
   protocol: config.protocol
 });
 
-client.hook.clone({ name: program.name, owner: program.owner }, function (err, stat) {
+var _service = {};
+if (program.name.length > 0 && program.owner.length > 0) {
+  _service.name = program.name;
+  _service.owner = program.owner;
+} else {
+   var parts = serviceName.split('/');
+   _service.name = parts[1];
+   _service.owner = parts[0];
+}
+
+client.hook.clone({ name: _service.name, owner: _service.owner }, function (err, stat) {
   if (err) {
     console.log(err)
     return;
