@@ -49,8 +49,8 @@ function Client (opts) {
   self.logs = new Logs(self);
   self.domains = new Domains(self);
 
-  if (config.accessKey) {
-    self.hook_private_key = config.accessKey;
+  if (opts.accessKey) {
+    self.hook_private_key = opts.accessKey;
     self.attemptAuth = true;
   }
   if (opts.hook_private_key) {
