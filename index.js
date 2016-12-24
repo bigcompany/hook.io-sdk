@@ -1,20 +1,12 @@
 var client = {};
 module['exports'] = client;
+
 client.createClient = function createClient (opts) {
   var c = new Client(opts);
   return c;
 };
 
-var request = require('request');
-
-// set max concurrency for requests to host
-// Note: We could use Infinity value as default, but we will assume most users won't need to create so many concurrency connections
-request.defaults({
-  pool: { maxSockets: 10 }
-})
-
-var hyper = require('hyperquest');
-var thenify = require('thenify');
+var thenify;
 
 var DS = require('./lib/datastore');
 var Domains = require('./lib/domains');
@@ -28,7 +20,6 @@ var config = require('./config');
 
 function Client (opts) {
   var self = this;
-
   opts = opts || {};
   self.host = opts.host || config.host || "hook.io";
   self.port = opts.port || config.port || 443;
@@ -69,6 +60,7 @@ function Client (opts) {
   }
 
   if (opts.promises === true) {
+    thenify = require('thenify');
     extendWithPromiseApi(self.datastore);
     extendWithPromiseApi(self.domains);
     extendWithPromiseApi(self.env);
@@ -108,12 +100,19 @@ Client.prototype.request = function (url, opts, cb) {
   opts.headers = { "hookio-private-key": self.hook_private_key };
 
   if (opts.stream === true) {
+    var hyper = require('hyperquest');
     //return request(url, opts);
     var _url = url + "?path=" + opts.json.path;
     opts.method = opts.method || "POST";
     var stream = hyper(_url, { method: opts.method, headers: { "hookio-private-key": self.hook_private_key }});
     return stream;
   } else {
+    var request = require('request');
+    // set max concurrency for requests to host
+    // Note: We could use Infinity value as default, but we will assume most users won't need to create so many concurrency connections
+    request.defaults({
+      pool: { maxSockets: 10 }
+    })
     request(url, opts, function (err, res, body){
       if (err) {
         return cb(err);
