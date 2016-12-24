@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+var config = require('../config');
+var program = require('commander');
+var sdk = require("../");
+
+program
+  .version('2.0.0')
+  .command('get', 'get current enviroment variables')
+  .command('set', 'set enviroment variables')
+
+/*
+program.on('--help', function(){
+  console.log('  Notes:');
+  console.log('');
+  console.log('    All commands are available as separate git style binaries');
+  console.log('    Such as: hook-list, hook-info, hook-run, hook-deploy, etc');
+  console.log('');
+});
+*/
+
+program.parse(process.argv);

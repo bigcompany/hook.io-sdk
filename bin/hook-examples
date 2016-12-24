@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
@@ -38,21 +38,21 @@ keys = keys.sort(function(a, b){
   }
   return 0;
 })
-
 keys.forEach(function(k){
   var h = hooks.services[k];
+  // console.log([h.owner + "/" + h.name, h.language])
   if (typeof h === "object") {
     table.push(
         [h.owner + "/" + h.name, h.language]
     );
   }
-  // console.log(h)
 });
 
 console.log(table.toString());
 console.log('');
-
 console.log('  Hint: Any example can be cloned by running `hook-clone :name`');
+console.log('');
+console.log('  Try running: `hook-clone echo` or `hook-clone coin`');
 console.log('');
 console.log('');
 

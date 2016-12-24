@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+var config = require('../config');
+var program = require('commander');
+var sdk = require("../");
+
+program
+  .version('2.0.0')
+  .command('key', 'get / set current API access key')
+  .command('list', 'list existing config properties')
+
+program.on('--help', function(){
+  console.log('  Notes:');
+  console.log('');
+  console.log('    Run `hook config key` to authorize with hook.io API');
+  console.log('');
+});
+
+program.parse(process.argv);

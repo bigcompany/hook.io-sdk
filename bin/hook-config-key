@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+var config = require('../config');
+
+var prompt = require('mschema-prompt');
+
+var handlers = {
+  'hook_private_key' : {
+     default: '',
+     required: true,
+     conform: function (val, cb) {
+       cb(null, val);
+     }
+  },
+}
+
+
+function complete (err, data) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  console.log('added', data)
+}
+
+if (typeof config.hook_private_key !== "undefined" && config.hook_private_key.length > 0) {
+  console.log('current API access key: ', config.hook_private_key)
+} else {
+  console.log('No API access key was detected!');
+  console.log('You can generate a new key at https://hook.io/keys');
+  console.log('Enter API Access key below...')
+  prompt(handlers, complete);
+  
+}
+

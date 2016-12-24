@@ -7,6 +7,7 @@ var sdk = require("../");
 program
   .version('2.0.0')
   .command('clone', 'clones existing hook')
+  .command('config', 'manage CLI configuration')
   .command('deploy', 'deploy hook to the cloud')
   // .command('files', 'files API')
   .command('alias', 'create hostname alias for hook')

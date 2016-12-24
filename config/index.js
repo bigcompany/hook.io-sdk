@@ -1,11 +1,7 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
+
 var config = {};
+config = require('./dev');
 module['exports'] = config;
 
-// dev, david
-
-config.user = "david";
-config.email = "david@marak.com";
-config.host = "localhost";
-config.port = 9999;
-config.protocol = 'http';
-config.accessKey = "dfc2d72c-5044-44c4-afa4-d7a5f322a43b";
+//config = require('./production');

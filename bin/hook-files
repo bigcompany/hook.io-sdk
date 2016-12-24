@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";

@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
@@ -37,6 +37,7 @@ if (program.name.length === 0) {
         program.owner = "examples"; // TODO: examples
       } else {
         console.log('Cannot find any services or example services with name: ' + parts[0])
+        console.log('Perhaps try running: `hook-clone echo`');
         process.exit();
       }
       // single word, try exampples
@@ -72,5 +73,5 @@ client.hook.clone({ name: _service.name, owner: _service.owner }, function (err,
     console.log(err)
     return;
   }
-  console.log('cloned ' + program.name);
+  console.log('cloned ' + program.name + ' to ' + process.cwd() + '/' + _service.name);
 });

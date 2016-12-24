@@ -1,4 +1,4 @@
-#!/usr/local/bin/node
+#!/usr/bin/env node
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
@@ -25,11 +25,14 @@ client.hook.deploy({ path: deployPath }, function (err, result) {
     return;
   }
   if (result.status === "created") {
-    console.log('created new service!');
-    console.log(result.hook.owner + '/' + result.hook.name);
+    console.log('created new service at:');
+    console.log(config.protocol + config.host + ':' + config.port + '/' + result.hook.owner + '/' + result.hook.name);
+    return;
   }
   if (result.status === "updated") {
-    console.log('updated service!');
-    console.log(result.hook.owner + '/' + result.hook.name);
+    console.log('updated ' +  result.hook.name + ' at:');
+    console.log(config.protocol + config.host + ':' + config.port + '/' + result.hook.owner + '/' + result.hook.name);
+    return;
   }
+  console.log(result);
 });

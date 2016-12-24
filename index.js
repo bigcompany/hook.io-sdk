@@ -49,8 +49,8 @@ function Client (opts) {
   self.logs = new Logs(self);
   self.domains = new Domains(self);
 
-  if (config.accessKey) {
-    self.hook_private_key = config.accessKey;
+  if (config.hook_private_key) {
+    self.hook_private_key = config.hook_private_key;
     self.attemptAuth = true;
   }
   if (opts.hook_private_key) {
@@ -86,7 +86,7 @@ function Client (opts) {
 
 Client.prototype.request = function (url, opts, cb) {
   var self = this;
-  url =  self.protocol + "://" + self.host + ":" + self.port + url;
+  url =  self.protocol + self.host + ":" + self.port + url;
   
   opts.json = opts.json || {};
   if (self.attemptAuth === true) {
