@@ -20,5 +20,5 @@ writeStream.on('data', function(d){
   console.log('write stream data', d.toString())
 })
 
-writeStream.write('hello');
+writeStream.write('hello!');
 writeStream.end();

@@ -101,8 +101,7 @@ Client.prototype.request = function (url, opts, cb) {
 
   if (opts.stream === true) {
     var hyper = require('hyperquest');
-    //return request(url, opts);
-    var _url = url + "?path=" + opts.json.path;
+    var _url = url;
     opts.method = opts.method || "POST";
     var stream = hyper(_url, { method: opts.method, headers: { "hookio-private-key": self.hook_private_key }});
     return stream;
