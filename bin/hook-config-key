@@ -42,7 +42,7 @@ function complete (err, data) {
       config.hook_private_key = access.key.hook_private_key;
       config.user = access.user.name;
       config.email = access.user.email;
-      fs.writeFileSync(__dirname + '/../config/dev/index.json', JSON.stringify(config, true, 2));
+      fs.writeFileSync(__dirname + '/../config/production/index.json', JSON.stringify(config, true, 2));
       console.log(access);
     } else {
       console.log(access)
