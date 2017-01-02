@@ -31,6 +31,11 @@ function Client (opts) {
     self.additionalRequestParams.files = opts.files;
   }
 
+  // set allowUnauthorizedTLS option to true for local testing with unauthorized / local SSL certificates
+  if (opts.allowUnauthorizedTLS === true) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
+  }
+
   self.datastore = new DS(self);
   self.env = new Env(self);
   self.events = new Events(self);
