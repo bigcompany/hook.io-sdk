@@ -32,17 +32,17 @@ function complete (err, data) {
   });
 
   client.keys.checkAccess({
-    hook_private_key: data.hook_private_key
+    hook_private_key: data.hook_private_key.trim()
   }, function (err, access) {
     if (err) {
       return console.log(err)
     }
     if (access.hasAccess) {
-      access.key.roles = access.key.roles.split(',');
+      access.key.roles = access.key.roles;
       config.hook_private_key = access.key.hook_private_key;
       config.user = access.user.name;
       config.email = access.user.email;
-      fs.writeFileSync(__dirname + '/../config/production/index.json', JSON.stringify(config, true, 2));
+      fs.writeFileSync(__dirname + '/../config/index.json', JSON.stringify(config, true, 2));
       console.log(access);
     } else {
       console.log(access)
