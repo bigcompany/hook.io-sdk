@@ -4,7 +4,7 @@ var config = require('../config');
 var program = require('commander');
 
 program
-  .version('2.0.0')
+  .version('2.0.2')
   .command('key', 'get / set current API access key')
   .command('list', 'list existing config properties')
 
