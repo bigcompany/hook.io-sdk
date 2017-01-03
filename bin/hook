@@ -5,7 +5,7 @@ var program = require('commander');
 var sdk = require("../");
 
 program
-  .version('2.0.2')
+  .version('2.1.0')
   .command('clone', 'clones existing hook')
   .command('config', 'manage CLI configuration')
   .command('deploy', 'deploy hook to the cloud')

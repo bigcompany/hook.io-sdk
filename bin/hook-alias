@@ -7,7 +7,7 @@ var hook_private_key = "";
 var program = require('commander');
 
 program
-  .version('2.0.2');
+  .version('2.1.0');
 
 program
   .command('create', 'create new alias', { isDefault: true })

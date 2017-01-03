@@ -1,6 +1,6 @@
 {
   "name": "hook.io-sdk",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "sdk api client for communicating with hook.io compatible servers",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "commander": "^2.9.0",
     "hyperquest": "^1.3.0",
     "map-stream": "0.0.6",
-    "microcule": "^4.0.1",
+    "microcule": "4.1.x",
     "microservice-examples": "*",
     "minimist": "^1.2.0",
     "moment": "^2.14.1",

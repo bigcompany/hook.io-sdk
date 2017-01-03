@@ -17,7 +17,7 @@ var table = new Table({
 });
 
 program
-  .version('2.0.2')
+  .version('2.1.0')
   .option('-o, --owner [string]', 'owner of the hook');
 
   // .option('-u, --url [string]', 'url of the hook');
