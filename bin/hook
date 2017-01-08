@@ -9,12 +9,15 @@ program
   .command('clone', 'clones existing hook')
   .command('config', 'manage CLI configuration')
   .command('deploy', 'deploy hook to the cloud')
+  .command('env', 'get / set service enviroment variables')
   // .command('files', 'files API')
   .command('alias', 'create hostname alias for hook')
   .command('examples', 'show list of example hooks')
   .command('get', 'get hook document')
   .command('init', 'initialize new local service')
   .command('list', 'list all hooks')
+  .command('login', 'login to current account')
+  .command('logout', 'log out of current account')
   .command('run', 'run hook in the cloud')
   .command('whoami', 'returns currently logged in user');
 
