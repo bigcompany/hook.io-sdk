@@ -1,3 +1,4 @@
 #!/usr/bin/env node
 var config = require('../config');
+console.log('using config file: ' + config.location);
 console.log(config)
