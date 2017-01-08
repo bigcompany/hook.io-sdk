@@ -14,11 +14,25 @@ var client = sdk.createClient({
 var argv = require('minimist')(process.argv.slice(2));
 var hookName = argv._[0];
 if (typeof hookName === "undefined") {
-  console.log('hook name is required.');
-  process.exit();
+  //process.exit();
   // TODO: check to see if package.json is here
   // if so, compare that to see if cloud version exists
-  var _service = requireServiceSync({ path: process.cwd() });
+  var _service;
+  console.log('hook name is required');
+  console.log('attempting to find hook name locally');
+  try {
+    _service = requireServiceSync({ path: process.cwd() });
+  } catch (err) {
+    console.log('no package.json found', err);
+    process.exit();
+  }
+  client.hook.get({ name: _service.name, owner: config.user }, function (err, stat) {
+    if (err) {
+      console.log(err)
+      return;
+    }
+    console.log(stat)
+  });
 } else {
   // TODO: use config name
   client.hook.get({ name: hookName, owner: config.user }, function (err, stat) {
