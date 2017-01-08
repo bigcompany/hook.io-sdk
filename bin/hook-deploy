@@ -14,6 +14,9 @@ var argv = require('minimist')(process.argv.slice(2));
 
 var deployPath = argv._[0] || process.cwd();
 
+console.log('attempting to deploy: ' + deployPath);
+console.log('connecting to: ' + config.uri);
+
 client.hook.deploy({ path: deployPath }, function (err, result) {
   if (err) {
     console.log('There was an issue communicating with hook.io');
@@ -25,13 +28,11 @@ client.hook.deploy({ path: deployPath }, function (err, result) {
     return;
   }
   if (result.status === "created") {
-    console.log('created new service at:');
-    console.log(config.protocol + config.host + ':' + config.port + '/' + result.hook.owner + '/' + result.hook.name);
+    console.log('created new service at: '+ config.uri + '/' + result.hook.owner + '/' + result.hook.name);
     return;
   }
   if (result.status === "updated") {
-    console.log('updated ' +  result.hook.name + ' at:');
-    console.log(config.protocol + config.host + ':' + config.port + '/' + result.hook.owner + '/' + result.hook.name);
+    console.log('updated service: ' + config.uri + '/' + result.hook.owner + '/' + result.hook.name);
     return;
   }
   console.log(result);
