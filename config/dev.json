@@ -1,0 +1,8 @@
+{
+  "host": "localhost",
+  "port": 9999,
+  "protocol": "http://",
+  "uri": "http://localhost:9999",
+  "location": "/Users/a/dev/big/hook.io-sdk/config/dev.json",
+  "env": "dev"
+}

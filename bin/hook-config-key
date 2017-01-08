@@ -42,7 +42,7 @@ function complete (err, data) {
       config.hook_private_key = access.key.hook_private_key;
       config.user = access.user.name;
       config.email = access.user.email;
-      fs.writeFileSync(__dirname + '/../config/index.json', JSON.stringify(config, true, 2));
+      fs.writeFileSync(__dirname + '/../config/' + config.env + '.json', JSON.stringify(config, true, 2));
       console.log(access);
     } else {
       console.log(access)
@@ -56,7 +56,7 @@ if (typeof config.hook_private_key !== "undefined" && config.hook_private_key.le
   prompt(handlers, complete);
 } else {
   console.log('No API access key was detected!');
-  console.log('You can generate a new key at https://hook.io/keys');
+  console.log('You can generate a new key at ' + config.uri + '/keys');
   console.log('Enter API Access key below...')
   prompt(handlers, complete);
 }

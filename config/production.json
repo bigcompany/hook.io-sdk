@@ -1,0 +1,8 @@
+{
+  "host": "hook.io",
+  "port": 443,
+  "protocol": "https://",
+  "uri": "https://hook.io",
+  "location": "/Users/a/dev/big/hook.io-sdk/config/production.json",
+  "env": "production"
+}
