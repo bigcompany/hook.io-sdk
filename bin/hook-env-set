@@ -1,2 +1,81 @@
 #!/usr/bin/env node
-console.log('Not implemented yet!')
+
+var path = require('path')
+var prompt = require('mschema-prompt');
+var config = require('../config');
+var sdk = require("../");
+
+var handlers = {
+  'key' : {
+     default: 'my-secret'
+  },
+  'value' : {
+    default: 'password1234'
+  }
+}
+
+console.log('setting new enviroment variable...');
+prompt(handlers, complete);
+function complete (err, data) {
+  if (err) {
+    // cancelled
+    console.log(err);
+    return;
+  }
+  data = data || {};
+
+  var client = sdk.createClient({
+    hook_private_key: config.hook_private_key,
+    host: config.host,
+    port: config.port,
+    protocol: config.protocol
+  });
+
+  // Remark: env updates are destructive and complete
+  // There is no concept in the hook.io API of a differntial update to env variables ( only full updates of all env key / values )
+  // For SDK convenience, we will automatically perform a local env merge for the user
+
+  // First, get the existing env for the user
+  client.env.get(function (err, _oldEnv) {
+    if (err) {
+      console.log(err.message);
+      process.exit();
+    }
+
+    _oldEnv[data.key] = data.value;
+
+    // perform update
+    client.env.set(_oldEnv, function (err, _newEnv) {
+      if (err) {
+        console.log(err.message);
+        process.exit();
+      }
+      console.log('updated env', _newEnv);
+      process.exit();
+    });
+  });
+
+};
+
+/*
+
+var argv = require('minimist')(process.argv.slice(2));
+var _root = argv._[0] || process.cwd();
+
+// create root if it doesnt already exist
+mkdirp.sync(_root);
+
+// write service source code file
+// TODO: is source actually code property?
+fs.writeFileSync(_root + "/service.sh", _service.source);
+
+// write service schema file
+fs.writeFileSync(_root + "/schema.js", 'module.exports = ' + JSON.stringify(_service.schema, true, 2));
+
+// write service view file
+fs.writeFileSync(_root + "/view.html", _service.view);
+
+// write package.json file
+fs.writeFileSync(_root + "/package.json", JSON.stringify(pkg, true, 2));
+
+*/
