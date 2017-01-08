@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+var sdk = require("../");
+var fs = require('fs');
+var config = require(__dirname + '/../config');
+
+delete config.hook_private_key;
+delete config.user;
+delete config.email;
+
+// empty config of user data and keys, then save it
+fs.writeFileSync(__dirname + '/../config/' + config.env + '.json', JSON.stringify(config, true, 2));
+
+console.log('logged out!');

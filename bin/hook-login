@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var fs = require('fs');
+
+
+var prompt = require('mschema-prompt');
+
+var handlers = {
+  'hook_private_key' : {
+     default: config.hook_private_key,
+     required: true,
+     conform: function (val, cb) {
+       cb(null, val);
+     }
+  },
+}
+
+function complete (err, data) {
+  if (err) {
+    console.log('\n' + err.message);
+    return;
+  }
+
+  console.log('checking role access...');
+  // once a key has been added, perform a checkAccess call to see if it's valid
+
+  var client = sdk.createClient({
+    host: config.host,
+    port: config.port,
+    protocol: config.protocol
+  });
+
+  client.keys.checkAccess({
+    hook_private_key: data.hook_private_key.trim()
+  }, function (err, access) {
+    if (err) {
+      return console.log(err)
+    }
+    if (access.hasAccess) {
+      access.key.roles = access.key.roles;
+      config.hook_private_key = access.key.hook_private_key;
+      config.user = access.user.name;
+      config.email = access.user.email;
+      fs.writeFileSync(__dirname + '/../config/' + config.env + '.json', JSON.stringify(config, true, 2));
+      console.log(access);
+      console.log('logged in as: ' + access.user.name);
+    } else {
+      console.log(access)
+    }
+  });
+}
+
+if (typeof config.hook_private_key !== "undefined" && config.hook_private_key.length > 0) {
+  console.log('  Current API access key:', config.hook_private_key)
+  console.log('  You may now optionally set the key below.');
+  prompt(handlers, complete);
+} else {
+  console.log('No API access key was detected!');
+  console.log('You can generate a new key at ' + config.uri + '/keys');
+  console.log('Enter API Access key below...')
+  prompt(handlers, complete);
+}

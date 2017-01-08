@@ -25,6 +25,8 @@
     "hook-get": "./bin/hook-get",
     "hook-init": "./bin/hook-init",
     "hook-list": "./bin/hook-list",
+    "hook-login": "./bin/hook-login",
+    "hook-logout": "./bin/hook-logout",
     "hook-deploy": "./bin/hook-deploy",
     "hook-clone": "./bin/hook-clone",
     "hook-run": "./bin/hook-run",
