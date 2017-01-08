@@ -18,6 +18,7 @@
     "hook-config": "./bin/hook-config",
     "hook-config-key": "./bin/hook-config-key",
     "hook-config-list": "./bin/hook-config-list",
+    "hook-destroy": "./bin/hook-destroy",
     "hook-examples": "./bin/hook-examples",
     "hook-env": "./bin/hook-env",
     "hook-env-get": "./bin/hook-env-get",
