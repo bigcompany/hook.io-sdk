@@ -2,4 +2,11 @@
 
 var sdk = require("../");
 var config = require(__dirname + '/../config');
-console.log(config.user, config.email)
+
+if (typeof config.user === "undefined" || config.user.length === 0) {
+  console.log('you are not logged in')
+  console.log('run `hook login` to gain access')
+} else {
+  console.log(config.user, config.email)
+}
+
