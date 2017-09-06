@@ -102,13 +102,14 @@ Client.prototype.request = function (url, opts, cb) {
     }
   }
 
-  opts.headers = { "hookio-private-key": self.hook_private_key };
+  opts.headers = opts.headers || {};
+  opts.headers["hookio-private-key"] = self.hook_private_key;
 
   if (opts.stream === true) {
     var hyper = require('hyperquest');
     var _url = url;
     opts.method = opts.method || "POST";
-    var stream = hyper(_url, { method: opts.method, headers: { "hookio-private-key": self.hook_private_key }});
+    var stream = hyper(_url, { method: opts.method, headers: opts.headers });
     return stream;
   } else {
     var request = require('request');
