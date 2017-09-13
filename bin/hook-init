@@ -3,7 +3,7 @@
 var path = require('path')
 var helpers = require('../lib/helpers');
 var fs = require('fs')
-var examples = require('microservice-examples');
+var examples = require('microcule-examples');
 var prompt = require('mschema-prompt');
 var config = require('../config');
 

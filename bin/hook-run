@@ -3,7 +3,7 @@
 var sdk = require("../");
 var config = require(__dirname + '/../config');
 var hook_private_key = "";
-var examples = require('microservice-examples');
+var examples = require('microcule-examples');
 
 // STDIN / REQUEST OUT stream processing
 process.stdin.setEncoding('utf8');
