@@ -33,7 +33,7 @@ var handlers = {
       if (langs.indexOf(val) === -1) {
         cb(new Error('Invalid option. Options include: \njavascript\nbash\nbabel'));
       } else {
-        var _main = 'index' + helpers.getExtensionFromLanguage(val);
+        var _main = 'index' + helpers.extensions[val];
         handlers.main.default = _main;
         cb(null, val);
       }
