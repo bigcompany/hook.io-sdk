@@ -13,7 +13,7 @@ TODO:
 */ 
 
 program
-  .version('2.1.0')
+  .version(sdk.version)
   .command('key', 'get / set current API access key')
   .command('list', 'list existing config properties')
   .command('env', 'switch current sdk enviroment')

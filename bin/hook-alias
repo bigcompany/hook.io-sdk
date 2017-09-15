@@ -7,10 +7,10 @@ var hook_private_key = "";
 var program = require('commander');
 
 program
-  .version('2.1.0');
+  .version(sdk.version);
 
 program
-  .command('create', 'create new alias', { isDefault: true })
+  .command('create', 'create new alias')
   .command('list', 'list all existing aliases')
 
   // .option('-u, --url [string]', 'url of the hook');

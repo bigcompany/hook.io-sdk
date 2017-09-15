@@ -5,7 +5,7 @@ var program = require('commander');
 var sdk = require("../");
 
 program
-  .version('2.1.0')
+  .version(sdk.version)
   .command('get', 'get current enviroment variables')
   .command('set', 'set enviroment variables')
 

@@ -7,7 +7,7 @@ var hook_private_key = "";
 var program = require('commander');
 
 program
-  .version('2.1.0')
+  .version(sdk.version)
   .option('-n, --name [string]', 'name of the hook')
   .option('-o, --owner [string]', 'owner of the hook')
   .option('-h, --hostname [string]', 'hostname to alias to', 'marak.com');
