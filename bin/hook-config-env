@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var config = require('../config');
+//switch config env based on file name and incoming argument name
+// for example: 'hook config env dev` switch to dev env and 'hook config production` switches to production env
+
+var prompt = require('mschema-prompt');
+
+var handlers = {
+  'env' : {
+     default: 'production',
+     enum: ['production'],
+     required: true,
+     conform: function (val, cb) {
+       cb(null, val);
+     }
+  }
+}
+
+prompt(handlers, function (err, complete){
+  if (err) {
+    console.log('\n' + err.message);
+    return;
+  }
+  var envSwitch = complete['env']
+  config.base.configEnv = envSwitch;
+  console.log('switching to env: %s', envSwitch);
+  fs.writeFileSync(__dirname + '/../config/index.json', JSON.stringify(config.base, true, 2));
+});

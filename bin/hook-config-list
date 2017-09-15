@@ -1,4 +1,7 @@
 #!/usr/bin/env node
 var config = require('../config');
 console.log('using config file: ' + config.location);
+// don't show base, it's a bit confusing and not needed to be shown
+delete config.base;
 console.log(config)
+

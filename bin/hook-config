@@ -4,17 +4,19 @@ var config = require('../config');
 var program = require('commander');
 var fs = require('fs');
 
+/*
+
+TODO:
+  switch env to be hook.io or localhost
+  having env / dev / staging is going to conflict with hook env commands
+  change env to be named server ( an array or collection of servers where commands can be sent to )
+*/ 
+
 program
   .version('2.1.0')
   .command('key', 'get / set current API access key')
   .command('list', 'list existing config properties')
-  .action(function (envSwitch) {
-    // default action here is to switch config env based on file name and incoming argument name
-    // for example: 'hook config dev` switch to dev env and 'hook config production` switches to production env
-    config.base.configEnv = envSwitch;
-    console.log('switching to env: %s', envSwitch);
-    fs.writeFileSync(__dirname + '/../config/index.json', JSON.stringify(config.base, true, 2));
-  });
+  .command('env', 'switch current sdk enviroment')
 
 program.on('--help', function(){
   console.log('  Notes:');
