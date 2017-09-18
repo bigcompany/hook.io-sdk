@@ -1,5 +1,5 @@
 var client = {};
-client.version = "3.2.0";
+client.version = "3.2.2";
 module['exports'] = client;
 
 client.createClient = function createClient (opts) {
