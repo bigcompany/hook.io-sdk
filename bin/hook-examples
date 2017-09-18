@@ -38,13 +38,15 @@ keys = keys.sort(function(a, b){
   }
   return 0;
 })
+
 keys.forEach(function(k){
   var h = hooks.services[k];
-  // console.log([h.owner + "/" + h.name, h.language])
   if (typeof h === "object") {
-    table.push(
-        [h.owner + "/" + h.name, h.language]
-    );
+    if (h.owner && h.name && h.language) {
+      table.push(
+          [h.owner + "/" + h.name, h.language]
+      );
+    }
   }
 });
 
@@ -55,5 +57,3 @@ console.log('');
 console.log('  Try running: `hook-clone echo` or `hook-clone coin`');
 console.log('');
 console.log('');
-
-
