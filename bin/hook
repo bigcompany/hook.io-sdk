@@ -17,6 +17,7 @@ program
   .command('get', 'get hook document')
   .command('init', 'initialize new local service')
   .command('list', 'list all hooks')
+  .command('logs', 'view logs for services')
   .command('login', 'login to current account')
   .command('logout', 'log out of current account')
   .command('run', 'run hook in the cloud')
@@ -29,5 +30,7 @@ program.on('--help', function(){
   console.log('    Such as: hook-list, hook-info, hook-run, hook-deploy, etc');
   console.log('');
 });
+
+
 
 program.parse(process.argv);

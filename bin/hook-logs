@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+var requireServiceSync = require('microcule').requireServiceSync;
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var argv = require('minimist')(process.argv.slice(2));
+
+var method = 'get', callback = function (err, stat) {
+  if (err) {
+    console.log(err)
+    return;
+  }
+  console.log(stat)
+};
+
+// if the --stream option has been provided, send the output to stdout ( instead of callback with console log )
+if (argv.stream === true) {
+  method = 'stream';
+  callback = process.stdout;
+}
+
+var hookName = argv._[0];
+if (typeof hookName === "undefined") {
+  //process.exit();
+  // TODO: check to see if package.json is here
+  // if so, compare that to see if cloud version exists
+  var _service;
+  console.log('hook name is required');
+  console.log('attempting to find hook name locally');
+  try {
+    _service = requireServiceSync({ path: process.cwd() });
+  } catch (err) {
+    console.log('no package.json found', err);
+    process.exit();
+  }
+  client.logs[method]({ name: _service.name, owner: config.user }, callback);
+} else {
+  // TODO: use config name
+  client.logs[method]({ name: hookName, owner: config.user }, callback);
+}
