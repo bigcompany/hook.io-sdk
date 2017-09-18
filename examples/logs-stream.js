@@ -2,4 +2,7 @@ var sdk = require("../");
 
 var client = sdk.createClient({});
 
-client.logs.stream('marak/echo', process.stdout);
+client.logs.stream({
+  name: 'echo',
+  owner: 'examples'
+}, process.stdout);
