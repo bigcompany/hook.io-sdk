@@ -11,7 +11,7 @@ program
   .command('deploy', 'deploy hook to the cloud')
   .command('destroy', 'destroy hook in the cloud')
   .command('env', 'get / set service enviroment variables')
-  // .command('files', 'files API')
+  .command('files', 'files API')
   .command('alias', 'create hostname alias for hook')
   .command('examples', 'show list of example hooks')
   .command('get', 'get hook document')

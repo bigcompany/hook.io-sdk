@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+var sdk = require("../");
+var path = require('path');
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+
+var argv = require('minimist')(process.argv.slice(2));
+
+if (typeof process.env.hook_private_key !== "undefined") {
+  hook_private_key =  process.env.hook_private_key;
+}
+
+if (typeof process.env.hook_host !== "undefined") {
+  config.host = process.env.hook_host;
+}
+
+if (typeof process.env.hook_port !== "undefined") {
+  config.port =  Number(process.env.hook_port);
+}
+
+if (typeof process.env.hook_protocol !== "undefined") {
+  config.protocol =  process.env.hook_protocol;
+}
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var additionalPath = argv._[0] || "";
+
+var localPath = path.normalize(process.cwd() + additionalPath);
+console.log(localPath);
+
+
+var prompt = require('mschema-prompt');
+
+var handlers = {
+  'confirm' : {
+     default: "no",
+     required: true,
+     label: 'upload ' + localPath + " ?",
+     conform: function (val, cb) {
+       var check = new RegExp(/y[es]*|n[o]?|1/i)
+       if (check.test(val)) {
+         if (/y(?:es)?|1/i.test(val)) {
+           return cb(null, true);
+         } else {
+           return cb(null, false);
+         }
+       }
+       return cb(new Error('yes or no answer required'));
+     }
+  }
+}
+
+prompt(handlers, _upload);
+
+function _upload (err, input) {
+  if (err) {
+    console.log(err.message);
+    process.exit();
+  }
+  if (input.confirm) {
+    console.log('not implemented yet!')
+    process.exit();
+    // uses options config with custom upload target path
+     client.files.upload({
+       localPath: localPath,
+       targetPath: config.user + '/'
+     }, function (err, result) {
+       console.log(err, result);
+     });
+  } else {
+    console.log('upload cancelled');
+  }
+}

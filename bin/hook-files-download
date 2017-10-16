@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+var sdk = require("../");
+var config = require(__dirname + '/../config');
+var hook_private_key = "";
+var argv = require('minimist')(process.argv.slice(2));
+
+if (typeof process.env.hook_private_key !== "undefined") {
+  hook_private_key =  process.env.hook_private_key;
+}
+
+if (typeof process.env.hook_host !== "undefined") {
+  config.host = process.env.hook_host;
+}
+
+if (typeof process.env.hook_port !== "undefined") {
+  config.port =  Number(process.env.hook_port);
+}
+
+if (typeof process.env.hook_protocol !== "undefined") {
+  config.protocol =  process.env.hook_protocol;
+}
+
+var client = sdk.createClient({
+  hook_private_key: hook_private_key,
+  host: config.host,
+  port: config.port,
+  protocol: config.protocol
+});
+
+var remotePath = argv._[0];
+client.files.download({
+   remotePath: remotePath,
+   targetPath: 'marak/'
+ }, function (err, result) {
+   console.log(err);
+ });
