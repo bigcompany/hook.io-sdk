@@ -19,19 +19,33 @@ var table = new Table({
   , colWidths: [30, 25, 25]
 });
 
-client.hook.all(function (err, hooks) {
+var argv = require('minimist')(process.argv.slice(2));
+var ownerName = argv._[0];
+
+var query = {};
+
+if (typeof ownerName !== "undefined") {
+  query.owner = ownerName;
+} else {
+  query.owner = config.user;
+}
+
+if (typeof query.owner === 'undefined') {
+  console.log('owner is required!');
+  console.log('either run `hook login` or provide a username')
+  return;
+}
+
+client.hook.find(query, function (err, hooks) {
   if (err) {
     console.log(err)
     return;
   }
   // table is an Array, so you can `push`, `unshift`, `splice` and friends
-  
   hooks.forEach(function(h){
     table.push(
         [h.name, moment(h.mtime).format("MMM DD YYYY HH:mm:ss"), moment(h.ctime).format("MMM DD YYYY HH:mm:ss")]
     );
   });
-  
   console.log(table.toString());
-  
 });
