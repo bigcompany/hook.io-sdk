@@ -38,7 +38,7 @@ var client = sdk.createClient({
 
 var localPath = process.cwd();
 
-client.files.readdir('', function(err, vinyl){
+client.files.readdir('', function(err, dir, vinyl){
   if (err) {
     throw err;
   }
