@@ -14,26 +14,54 @@ var argv = require('minimist')(process.argv.slice(2));
 
 var deployPath = argv._[0] || process.cwd();
 
-console.log('attempting to deploy: ' + deployPath);
-console.log('connecting to: ' + config.uri);
+var prompt = require('mschema-prompt');
 
-client.hook.deploy({ path: deployPath }, function (err, result) {
+var handlers = {
+  'confirm' : {
+     default: "yes",
+     required: true,
+     label: 'Deploy ' + deployPath + " ?",
+     conform: require('../lib/helpers/cli/conform-yes-no')
+  }
+}
+
+prompt(handlers, _deploy);
+
+function _deploy (err, input) {
   if (err) {
-    console.log('There was an issue communicating with hook.io');
-    console.log('Error: ' + err.message);
-    return;
+    console.log(err.message);
+    process.exit();
   }
-  if (result.status === 404) {
+  if (!input.confirm) {
+    console.log('cancelled');
+    process.exit();
+  }
+  console.log('attempting to deploy: ' + deployPath);
+  console.log('connecting to: ' + config.uri);
+
+  client.hook.deploy({ path: deployPath }, function (err, result) {
+    if (err) {
+      console.log('Error: ' + err.message);
+      if (err.code === "ENOENT") {
+        console.log('A valid package.json file is required in order to deploy a new service');
+        console.log('You can run `hook-init` to generate a new package.json file')
+      } else {
+        console.log('There was an issue communicating with hook.io');
+      }
+      return;
+    }
+    if (result.status === 404) {
+      console.log(result);
+      return;
+    }
+    if (result.status === "created") {
+      console.log('created new service at: '+ config.uri + '/' + result.hook.owner + '/' + result.hook.name);
+      return;
+    }
+    if (result.status === "updated") {
+      console.log('updated service: ' + config.uri + '/' + result.hook.owner + '/' + result.hook.name);
+      return;
+    }
     console.log(result);
-    return;
-  }
-  if (result.status === "created") {
-    console.log('created new service at: '+ config.uri + '/' + result.hook.owner + '/' + result.hook.name);
-    return;
-  }
-  if (result.status === "updated") {
-    console.log('updated service: ' + config.uri + '/' + result.hook.owner + '/' + result.hook.name);
-    return;
-  }
-  console.log(result);
-});
+  });
+}
