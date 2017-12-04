@@ -15,12 +15,33 @@ var argv = require('minimist')(process.argv.slice(2));
 var deployPath = argv._[0] || process.cwd();
 
 var prompt = require('mschema-prompt');
+var requireServiceSync = require('microcule').requireServiceSync;
 
+// check incoming deployPath to see if there is a valid package.json or file to deploy
+
+console.log('checking local file-system...');
+var pkg;
+
+try {
+  pkg = requireServiceSync({ path: deployPath });
+} catch (err) {
+  throw err;
+}
+
+if (typeof pkg.pkg !== 'object') {
+  console.log('warning: no package.json found. using default values.')
+}
+
+console.log('detected language:', pkg.language);
+
+// TODO: better handling of passed in options and deploy both
+// allow for deploying single file without package, but make sure to confirm file name and then create name as file without ext, language auto-detected by extention and presented to user
+// attempt to require service before confirmation in order to confirm location and language
 var handlers = {
   'confirm' : {
      default: "yes",
      required: true,
-     label: 'Deploy ' + deployPath + " ?",
+     label: 'Deploy ' + pkg.localPath + " ?",
      conform: require('../lib/helpers/cli/conform-yes-no')
   }
 }
@@ -36,10 +57,11 @@ function _deploy (err, input) {
     console.log('cancelled');
     process.exit();
   }
-  console.log('attempting to deploy: ' + deployPath);
+
+  console.log('attempting to deploy: ' + pkg.name);
   console.log('connecting to: ' + config.uri);
 
-  client.hook.deploy({ path: deployPath }, function (err, result) {
+  client.hook.deploy(pkg, function (err, result) {
     if (err) {
       console.log('Error: ' + err.message);
       if (err.code === "ENOENT") {
@@ -56,11 +78,9 @@ function _deploy (err, input) {
     }
     if (result.status === "created") {
       console.log('created new service at: '+ config.uri + '/' + result.hook.owner + '/' + result.hook.name);
-      return;
     }
     if (result.status === "updated") {
       console.log('updated service: ' + config.uri + '/' + result.hook.owner + '/' + result.hook.name);
-      return;
     }
     console.log(result);
   });

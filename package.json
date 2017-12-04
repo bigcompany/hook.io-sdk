@@ -53,7 +53,7 @@
     "microcule": "4.1.x",
     "microcule-examples": "^5.0.0",
     "minimist": "^1.2.0",
-    "mschema-prompt": "1.x.x",
+    "mschema-prompt": "^2.1.0",
     "request": "^2.69.0",
     "thenify": "^3.2.0",
     "through2-concurrent": "^1.1.1",
