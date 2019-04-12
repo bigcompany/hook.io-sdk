@@ -9,6 +9,7 @@ client.createClient = function createClient (opts) {
 
 var thenify;
 
+var Cron = require('./lib/cron');
 var DS = require('./lib/datastore');
 var Domains = require('./lib/domains');
 var Env = require('./lib/env');
@@ -37,6 +38,7 @@ function Client (opts) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
   }
 
+  self.cron = new Cron(self);
   self.datastore = new DS(self);
   self.env = new Env(self);
   self.events = new Events(self);
@@ -122,6 +124,9 @@ Client.prototype.request = function (url, opts, cb) {
     request(url, opts, function (err, res, body){
       if (err) {
         return cb(err);
+      }
+      if (res.statusCode === 400) {
+        return cb(new Error('Validation error: ' + url), res, body)
       }
       if (res.statusCode === 404) {
         return cb(new Error('Could not find requested URI: ' + url), res, body)
