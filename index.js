@@ -90,10 +90,13 @@ Client.prototype.request = function (url, opts, cb) {
   
   opts.json = opts.json || {};
   if (self.attemptAuth === true) {
-    if (opts.json === true) {
-      opts.json = {};
+    if (!opts.headers) {
+      opts.headers = {};
     }
-    opts.json.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
+    opts.headers.hook_private_key = opts.json.hook_private_key || self.hook_private_key;
+    if (opts.json && opts.json.hook_private_key !== undefined) {
+        delete opts.json.hook_private_key;
+    }
   }
 
   // console.log('making request', url, opts, typeof cb)
